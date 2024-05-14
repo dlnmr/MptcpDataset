@@ -45,7 +45,7 @@ static struct ecfsched_cb *ecfsched_get_cb(const struct tcp_sock *tp)
 }
 
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
- void printInfo(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int c) {
+ void getInfo(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int c) {
  
 	ktime_t curent_time = ktime_get();	
 	s64 cTime = ktime_to_ns(curent_time);
@@ -226,7 +226,7 @@ static struct sock *ecf_get_available_subflow(struct sock *meta_sk,
 			if (lhs_s >= rhs_s) {
 				/* too slower than fastest */
 				ecf_cb->switching_margin = 1;
-				/* ADD */printInfo(bestsk,minsk,meta_sk,0);
+				/* ADD */getInfo(bestsk,minsk,meta_sk,0);
 				return NULL;
 			}
 		} else {
@@ -234,7 +234,7 @@ static struct sock *ecf_get_available_subflow(struct sock *meta_sk,
 			ecf_cb->switching_margin = 0;
 		}
 	}
-	/* ADD */if (bestsk && minsk) printInfo(bestsk,minsk,meta_sk,1);
+	/* ADD */if (bestsk && minsk) getInfo(bestsk,minsk,meta_sk,1);
 	return bestsk;
 }
 
