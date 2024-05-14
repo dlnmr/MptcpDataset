@@ -96,7 +96,7 @@ static int mptcp_rr_dont_reinject_skb(const struct tcp_sock *tp, const struct sk
 		mptcp_pi_to_flag(tp->mptcp->path_index) & TCP_SKB_CB(skb)->path_mask;
 }
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
- void printInfo(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int c) {
+ void getInfo(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int c) {
 
 	ktime_t curent_time = ktime_get();	
 	s64 cTime = ktime_to_ns(curent_time);	
@@ -229,7 +229,7 @@ static struct sock *rr_get_available_subflow(struct sock *meta_sk,
 			TCP_SKB_CB(skb)->path_mask = 0;
 		sk = backupsk;
 	}
-	/* ADD */if (sk && minsk) printInfo(sk,minsk,meta_sk,1);
+	/* ADD */if (sk && minsk) getInfo(sk,minsk,meta_sk,1);
 	return sk;
 }
 
@@ -363,7 +363,7 @@ found:
 			rr_p->quota += DIV_ROUND_UP(skb->len, mss_now);
 		else
 			rr_p->quota++;
-		/* ADD */if (choose_sk && minsk) printInfo(choose_sk,minsk,meta_sk,1);
+		/* ADD */if (choose_sk && minsk) getInfo(choose_sk,minsk,meta_sk,1);
 		return skb;
 	}
 
