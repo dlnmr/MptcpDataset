@@ -142,7 +142,7 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 }
 
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
- void printInfo(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int c) {
+ void getInfo(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int c) {
  
 	ktime_t curent_time = ktime_get();	
 	s64 cTime = ktime_to_ns(curent_time);
@@ -314,11 +314,11 @@ struct sock *blest_get_available_subflow(struct sock *meta_sk, struct sk_buff *s
 			 * we wouldn't be able to send all the data we'd like to send on the fast flow
 			 * so don't do that
 			 */
-			/* ADD */printInfo(bestsk,minsk,meta_sk,0);
+			/* ADD */getInfo(bestsk,minsk,meta_sk,0);
 			return NULL;
 		}
 	}
-	/* ADD */if (bestsk && minsk) printInfo(bestsk,minsk,meta_sk,1);
+	/* ADD */if (bestsk && minsk) getInfo(bestsk,minsk,meta_sk,1);
 	return bestsk;
 }
 
