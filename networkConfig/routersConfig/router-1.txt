@@ -1,0 +1,33 @@
+Router-1#sho runn
+!
+interface GigabitEthernet0/0
+ ip address 192.168.10.254 255.255.255.0
+!
+interface GigabitEthernet1/0
+ ip address 172.16.100.1 255.255.255.252
+ service-policy output mptcp
+!
+interface GigabitEthernet1/1
+ ip address 172.16.101.1 255.255.255.252
+ service-policy output mptcp
+!
+ip route 192.168.20.0 255.255.255.0 172.16.100.2
+ip route 192.168.21.0 255.255.255.0 172.16.101.2
+!
+ip access-list extended ACL.10.1_20.1
+ permit ip host 192.168.10.1 host 192.168.20.1
+ip access-list extended ACL.10.1_21.1
+ permit ip host 192.168.10.1 host 192.168.21.1
+! 
+class-map match-all CM.10.1_20.1
+ match access-group name ACL.10.1_20.1
+class-map match-all CM.10.1_21.1
+ match access-group name ACL.10.1_21.1
+!
+policy-map mptcp
+ class CM.10.1_20.1
+  shape average 100000000
+ class CM.10.1_21.1
+  shape average 10000000
+!
+end
