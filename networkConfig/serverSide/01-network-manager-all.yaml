@@ -1,0 +1,18 @@
+network:
+  version: 2
+  renderer: NetworkManager
+  ethernets:
+    eth0:
+      addresses: [192.168.10.1/24]
+      routes:
+        - to: 192.168.20.0/24
+          via: 192.168.10.254 
+        - to: 192.168.21.0/24
+          via: 192.168.10.254  
+    eth1:
+      addresses: [192.168.11.1/24]
+      routes:
+        - to: 192.168.20.0/24
+          via: 192.168.11.254  
+        - to: 192.168.21.0/24
+          via: 192.168.11.254
