@@ -10,7 +10,7 @@ Installation :
 
 Use the script mptcpInstall.py for installing MPTCP, tools, and dependencies.
 
-Use mptcpScenario.py to configure routers, server hosts, and client hosts for dataset generation.
+Use mptcpScenario.py to configure routers, server host, and client host for dataset generation.
 
 
 First Author :
