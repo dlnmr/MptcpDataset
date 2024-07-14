@@ -227,7 +227,7 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	if (tcp_packets_in_flight(tcp_sk(meta_sk))) Fs_GS=tcp_packets_in_flight(tcp_sk(meta_sk));
 	if (meta_sk->sk_wmem_queued) Bo_GS=meta_sk->sk_wmem_queued;
 
-	printk("%pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%lld,%u\n", &inetinfo_cSS->inet_saddr, tcp_sport_cSS, &inetinfo_cSS->inet_daddr, tcp_dport_cSS, cwnd_cSS, sRtt_cSS, Th_cSS, Fs_cSS, Bo_cSS, Sl_cSS, Rt_cSS, Ds_cSS, Te_cSS, Gp_cSS, ,&inetinfo_fSS->inet_saddr, tcp_sport_fSS, &inetinfo_fSS->inet_daddr, tcp_dport_fSS, cwnd_fSS, sRtt_fSS, Th_fSS, Fs_fSS, Bo_fSS, Sl_fSS, Rt_fSS, Ds_fSS, Te_fSS, Gp_fSS,,&inetinfo_GS->inet_saddr, tcp_sport_GS, &inetinfo_GS->inet_daddr, tcp_dport_GS, cwnd_GS, srtt_GS, Fs_GS, Bo_GS, (long long)Ts, Lb);
+	printk(" %pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%lld,%u\n", &inetinfo_cSS->inet_saddr, tcp_sport_cSS, &inetinfo_cSS->inet_daddr, tcp_dport_cSS, cwnd_cSS, sRtt_cSS, Th_cSS, Fs_cSS, Bo_cSS, Sl_cSS, Rt_cSS, Ds_cSS, Te_cSS, Gp_cSS, ,&inetinfo_fSS->inet_saddr, tcp_sport_fSS, &inetinfo_fSS->inet_daddr, tcp_dport_fSS, cwnd_fSS, sRtt_fSS, Th_fSS, Fs_fSS, Bo_fSS, Sl_fSS, Rt_fSS, Ds_fSS, Te_fSS, Gp_fSS,,&inetinfo_GS->inet_saddr, tcp_sport_GS, &inetinfo_GS->inet_daddr, tcp_dport_GS, cwnd_GS, srtt_GS, Fs_GS, Bo_GS, (long long)Ts, Lb);
 }
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 
