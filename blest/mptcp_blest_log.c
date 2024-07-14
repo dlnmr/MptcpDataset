@@ -182,7 +182,7 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	if (tcp_sk(bestsk)->srtt_us) sRtt_cSS=tcp_sk(bestsk)->srtt_us;
 	if (tcp_sk(bestsk)->snd_cwnd  && tcp_sk(bestsk)->srtt_us)  Th_cSS=(tcp_sk(bestsk)->snd_cwnd*mss1*8)/tcp_sk(bestsk)->srtt_us;
 	if (tcp_packets_in_flight(tcp_sk(bestsk))) Fs_cSS=tcp_packets_in_flight(tcp_sk(bestsk));
-	if (bestsk->sk_sndbuf) Bo_cSS=bestsk->sk_sndbuf;
+	if (bestsk->sk_sndbuf) Bo_cSS=bestsk->sk_wmem_queued;
 	if (tcp_sk(bestsk)->lost) Sl_cSS=tcp_sk(bestsk)->lost;
 	if (tcp_sk(bestsk)->retrans_out) Rt_cSS=tcp_sk(bestsk)->retrans_out;
 	if (tcp_sk(bestsk)->rate_delivered) Ds_cSS=tcp_sk(bestsk)->rate_delivered;
@@ -205,7 +205,7 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	if (tcp_sk(minsk)->srtt_us) sRtt_fSS=tcp_sk(minsk)->srtt_us;
 	if (tcp_sk(minsk)->snd_cwnd  && tcp_sk(minsk)->srtt_us)  Th_fSS=(tcp_sk(minsk)->snd_cwnd*mss1*8)/tcp_sk(minsk)->srtt_us;
 	if (tcp_packets_in_flight(tcp_sk(minsk))) Fs_fSS=tcp_packets_in_flight(tcp_sk(minsk));
-	if (minsk->sk_sndbuf) Bo_fSS=minsk->sk_sndbuf;
+	if (minsk->sk_sndbuf) Bo_fSS=minsk->sk_wmem_queued;
 	if (tcp_sk(minsk)->lost) Sl_fSS=tcp_sk(minsk)->lost;
 	if (tcp_sk(minsk)->retrans_out) Rt_fSS=tcp_sk(minsk)->retrans_out;
 	if (tcp_sk(minsk)->rate_delivered) Ds_fSS=tcp_sk(minsk)->rate_delivered;
