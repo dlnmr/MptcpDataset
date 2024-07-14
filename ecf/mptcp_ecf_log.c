@@ -47,84 +47,91 @@ static struct ecfsched_cb *ecfsched_get_cb(const struct tcp_sock *tp)
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
  void getInfo(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int c) {
  
+
+	/*************************************
+	Pid: Path Identity : Source IP address + Source Tcp Port + Destination IP Address + Destination Tcp Port
+	CWND: Window Size
+	sRTT: Smoothed Round-Trip Time
+	Th: Throughput
+	Ds: Delivered Segments
+	Te: Time elapsed
+	Gp: Goodput
+	Fs: In-flight segments
+	Bo: Sender Buffer Occupancy
+	Sl: Segment Loss
+	Rt: Retransmission
+	Ts: Timestamp
+	Lb: Label
+ 	cSS: current sub-session
+	fSS: fast sub-session
+	GS: MPTCP global session
+	**************************************/
+	 
 	ktime_t curent_time = ktime_get();	
-	s64 cTime = ktime_to_ns(curent_time);
+	s64 Ts = ktime_to_ns(curent_time);
 	
 	
 	/*********************************   variables of best sk   *********************************/
 
-	struct inet_sock *inetinfob = inet_sk(bestsk);
-	u32 tcp_sportb, tcp_dportb;
-	tcp_sportb = ntohs(inetinfob->inet_sport);
-	tcp_dportb = ntohs(inetinfob->inet_dport);
+	struct inet_sock *inetinfo_cSS = inet_sk(bestsk);
+	u32 tcp_sport_cSS, tcp_dport_cSS;
+	tcp_sport_cSS = ntohs(inetinfo_cSS->inet_sport);
+	tcp_dport_cSS = ntohs(inetinfo_cSS->inet_dport);	
+
+	u64 cwnd_cSS, sRtt_cSS, Th_cSS, Fs_cSS, Bo_cSS, Sl_cSS, Rt_cSS, Ds_cSS, Te_cSS, Gp_cSS;
+	cwnd_cSS=sRtt_cSS=Th_cSS=Fs_cSS=Bo_cSS=Sl_cSS=Rt_cSS=Ds_cSS=Te_cSS=Gp_cSS=0;
+	u32 mss_cSS = tcp_current_mss(bestsk);
 	
-	u64 throughput1, goodput1, sndbuf1,snd_cwnd_1, srtt_us_1, in_flight_1, wmem_1, wmem_a_1, rate_d_1, rate_i_1, lost_out_1, lost_1, packets_out_1, retrans_out_1, snd_ssthresh_1;
-	throughput1=goodput1=sndbuf1=snd_cwnd_1=srtt_us_1=in_flight_1=wmem_1=rate_d_1=rate_i_1=lost_out_1=lost_1=packets_out_1=retrans_out_1=snd_ssthresh_1=wmem_a_1=0;
-	u32 mss1 = tcp_current_mss(bestsk);	
-	
-        if (tcp_sk(bestsk)->snd_cwnd) snd_cwnd_1=tcp_sk(bestsk)->snd_cwnd;
-	if (tcp_sk(bestsk)->srtt_us) srtt_us_1=tcp_sk(bestsk)->srtt_us;
-	if (tcp_packets_in_flight(tcp_sk(bestsk))) in_flight_1=tcp_packets_in_flight(tcp_sk(bestsk));
-	if (bestsk->sk_wmem_queued) wmem_1=bestsk->sk_wmem_queued;
-	if (tcp_sk(bestsk)->rate_delivered) rate_d_1=tcp_sk(bestsk)->rate_delivered;
-	if (tcp_sk(bestsk)->rate_interval_us) rate_i_1=tcp_sk(bestsk)->rate_interval_us;
-        if (tcp_sk(bestsk)->lost_out) lost_out_1=tcp_sk(bestsk)->lost_out;        
-	if (tcp_sk(bestsk)->lost) lost_1=tcp_sk(bestsk)->lost;
-	if (tcp_sk(bestsk)->packets_out) packets_out_1=tcp_sk(bestsk)->packets_out;
-	if (tcp_sk(bestsk)->retrans_out) retrans_out_1=tcp_sk(bestsk)->retrans_out;
-	if (tcp_sk(bestsk)->snd_ssthresh) snd_ssthresh_1=tcp_sk(bestsk)->snd_ssthresh;	
-	if (tcp_sk(bestsk)->rate_delivered  && tcp_sk(bestsk)->rate_interval_us)  throughput1=(tcp_sk(bestsk)->rate_delivered*mss1*8)/tcp_sk(bestsk)->rate_interval_us;	
-	if (tcp_sk(bestsk)->snd_cwnd  && tcp_sk(bestsk)->srtt_us)  goodput1=(tcp_sk(bestsk)->snd_cwnd*mss1*8)/tcp_sk(bestsk)->srtt_us;	
-	if (tcp_sk(bestsk)->snd_cwnd  && tcp_sk(bestsk)->srtt_us)  goodput1=(tcp_sk(bestsk)->snd_cwnd*mss1*8)/tcp_sk(bestsk)->srtt_us;	
-	if (bestsk->sk_sndbuf) sndbuf1=bestsk->sk_sndbuf;
+        if (tcp_sk(bestsk)->snd_cwnd) cwnd_cSS=tcp_sk(bestsk)->snd_cwnd;
+	if (tcp_sk(bestsk)->srtt_us) sRtt_cSS=tcp_sk(bestsk)->srtt_us;
+	if (tcp_sk(bestsk)->snd_cwnd  && tcp_sk(bestsk)->srtt_us)  Th_cSS=(tcp_sk(bestsk)->snd_cwnd*mss_cSS*8)/tcp_sk(bestsk)->srtt_us;
+	if (tcp_packets_in_flight(tcp_sk(bestsk))) Fs_cSS=tcp_packets_in_flight(tcp_sk(bestsk));
+	if (bestsk->sk_sndbuf) Bo_cSS=bestsk->sk_wmem_queued;
+	if (tcp_sk(bestsk)->lost) Sl_cSS=tcp_sk(bestsk)->lost;
+	if (tcp_sk(bestsk)->retrans_out) Rt_cSS=tcp_sk(bestsk)->retrans_out;
+	if (tcp_sk(bestsk)->rate_delivered) Ds_cSS=tcp_sk(bestsk)->rate_delivered;
+	if (tcp_sk(bestsk)->rate_interval_us) Te_cSS=tcp_sk(bestsk)->rate_interval_us;	
+	if (tcp_sk(bestsk)->rate_delivered  && tcp_sk(bestsk)->rate_interval_us)  Gp_cSS=(tcp_sk(bestsk)->rate_delivered*mss_cSS*8)/tcp_sk(bestsk)->rate_interval_us;		
+
 	
 	/*********************************   variables of min sk   *********************************/
 	
-	struct inet_sock *inetinfom = inet_sk(minsk);
-	u32 tcp_sportm, tcp_dportm;
-	tcp_sportm = ntohs(inetinfom->inet_sport);
-	tcp_dportm = ntohs(inetinfom->inet_dport);
+	struct inet_sock *inetinfo_fSS = inet_sk(minsk);
+	u32 tcp_sport_fSS, tcp_dport_fSS;
+	tcp_sport_fSS = ntohs(inetinfo_fSS->inet_sport);
+	tcp_dport_fSS = ntohs(inetinfo_fSS->inet_dport);
 	
-	u64 throughput2, goodput2, sndbuf2, snd_cwnd_2, srtt_us_2, in_flight_2, wmem_2, rate_d_2, rate_i_2, lost_out_2, lost_2, packets_out_2, retrans_out_2, snd_ssthresh_2;
-	throughput2=goodput2=sndbuf2=snd_cwnd_2=srtt_us_2=in_flight_2=wmem_2=rate_d_2=rate_i_2=lost_out_2=lost_2=packets_out_2=retrans_out_2=snd_ssthresh_2=0;
-	u32 mss2 = tcp_current_mss(minsk);
-
-        if (tcp_sk(minsk)->snd_cwnd) snd_cwnd_2=tcp_sk(minsk)->snd_cwnd;
-	if (tcp_sk(minsk)->srtt_us) srtt_us_2=tcp_sk(minsk)->srtt_us;
-	if (tcp_packets_in_flight(tcp_sk(minsk))) in_flight_2=tcp_packets_in_flight(tcp_sk(minsk));
-	if (minsk->sk_wmem_queued) wmem_2=minsk->sk_wmem_queued;
-	if (tcp_sk(minsk)->rate_delivered) rate_d_2=tcp_sk(minsk)->rate_delivered;
-	if (tcp_sk(minsk)->rate_interval_us) rate_i_2=tcp_sk(minsk)->rate_interval_us;
-        if (tcp_sk(minsk)->lost_out) lost_out_2=tcp_sk(minsk)->lost_out;        
-	if (tcp_sk(minsk)->lost) lost_2=tcp_sk(minsk)->lost;
-	if (tcp_sk(minsk)->packets_out) packets_out_2=tcp_sk(minsk)->packets_out;
-	if (tcp_sk(minsk)->retrans_out) retrans_out_2=tcp_sk(minsk)->retrans_out;
-	if (tcp_sk(minsk)->snd_ssthresh) snd_ssthresh_2=tcp_sk(minsk)->snd_ssthresh;
-	if (tcp_sk(minsk)->rate_delivered  && tcp_sk(minsk)->rate_interval_us)  throughput2=(tcp_sk(minsk)->rate_delivered*mss1*8)/tcp_sk(minsk)->rate_interval_us;
-	if (tcp_sk(minsk)->snd_cwnd  && tcp_sk(minsk)->srtt_us)  goodput2=(tcp_sk(minsk)->snd_cwnd*mss1*8)/tcp_sk(minsk)->srtt_us;	
-	if (minsk->sk_sndbuf) sndbuf2=minsk->sk_sndbuf;
+	u64 cwnd_fSS, sRtt_fSS, Th_fSS, Fs_fSS, Bo_fSS, Sl_fSS, Rt_fSS, Ds_fSS, Te_fSS, Gp_fSS;
+	cwnd_fSS=sRtt_fSS=Th_fSS=Fs_fSS=Bo_fSS=Sl_fSS=Rt_fSS=Ds_fSS=Te_fSS=Gp_fSS=0;
+	u32 mss_fSS = tcp_current_mss(minsk);
+	
+        if (tcp_sk(minsk)->snd_cwnd) cwnd_fSS=tcp_sk(minsk)->snd_cwnd;
+	if (tcp_sk(minsk)->srtt_us) sRtt_fSS=tcp_sk(minsk)->srtt_us;
+	if (tcp_sk(minsk)->snd_cwnd  && tcp_sk(minsk)->srtt_us)  Th_fSS=(tcp_sk(minsk)->snd_cwnd*mss_fSS*8)/tcp_sk(minsk)->srtt_us;
+	if (tcp_packets_in_flight(tcp_sk(minsk))) Fs_fSS=tcp_packets_in_flight(tcp_sk(minsk));
+	if (minsk->sk_sndbuf) Bo_fSS=minsk->sk_wmem_queued;
+	if (tcp_sk(minsk)->lost) Sl_fSS=tcp_sk(minsk)->lost;
+	if (tcp_sk(minsk)->retrans_out) Rt_fSS=tcp_sk(minsk)->retrans_out;
+	if (tcp_sk(minsk)->rate_delivered) Ds_fSS=tcp_sk(minsk)->rate_delivered;
+	if (tcp_sk(minsk)->rate_interval_us) Te_fSS=tcp_sk(minsk)->rate_interval_us;	
+	if (tcp_sk(minsk)->rate_delivered  && tcp_sk(minsk)->rate_interval_us)  Gp_fSS=(tcp_sk(minsk)->rate_delivered*mss_fSS*8)/tcp_sk(minsk)->rate_interval_us;
 	
 	/*********************************   variables of meta sk   *********************************/
 
-	struct inet_sock *inetinfot = inet_sk(meta_sk);
-	u32 tcp_sportt, tcp_dportt;
-	tcp_sportt = ntohs(inetinfot->inet_sport);
-	tcp_dportt = ntohs(inetinfot->inet_dport);
+	struct inet_sock *inetinfo_GS = inet_sk(meta_sk);
+	u32 tcp_sport_GS, tcp_dport_GS;
+	tcp_sport_GS = ntohs(inetinfo_GS->inet_sport);
+	tcp_dport_GS = ntohs(inetinfo_GS->inet_dport);
 
-	u64 sndbuf3,snd_cwnd_3, srtt_us_3, in_flight_3, wmem_3, packets_out_3, snd_ssthresh_3;
-	sndbuf3=snd_cwnd_3=srtt_us_3=in_flight_3=wmem_3=packets_out_3=snd_ssthresh_3=0;
+	u64 cwnd_GS, srtt_GS, Fs_GS, Bo_GS;
+	cwnd_GS=srtt_GS=Fs_GS=Bo_GS=0;
 	
-	if (tcp_sk(meta_sk)->snd_cwnd) snd_cwnd_3=tcp_sk(meta_sk)->snd_wnd;
-	if (tcp_sk(meta_sk)->srtt_us) srtt_us_3=tcp_sk(meta_sk)->srtt_us;
-	if (tcp_packets_in_flight(tcp_sk(meta_sk))) in_flight_3=tcp_packets_in_flight(tcp_sk(meta_sk));
-	if (meta_sk->sk_wmem_queued) wmem_3=meta_sk->sk_wmem_queued;
-	if (tcp_sk(meta_sk)->packets_out) packets_out_3=tcp_sk(meta_sk)->packets_out;	
-	if (tcp_sk(meta_sk)->snd_ssthresh) snd_ssthresh_3=tcp_sk(meta_sk)->snd_ssthresh;	
-	if (meta_sk->sk_sndbuf) sndbuf3=meta_sk->sk_sndbuf;
-	
+	if (tcp_sk(meta_sk)->snd_cwnd) cwnd_GS=tcp_sk(meta_sk)->snd_wnd;
+	if (tcp_sk(meta_sk)->srtt_us) srtt_GS=tcp_sk(meta_sk)->srtt_us;
+	if (tcp_packets_in_flight(tcp_sk(meta_sk))) Fs_GS=tcp_packets_in_flight(tcp_sk(meta_sk));
+	if (meta_sk->sk_wmem_queued) Bo_GS=meta_sk->sk_wmem_queued;
 
-	printk("ecf_log %pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%lld,%u\n ",&inetinfob->inet_saddr,tcp_sportb,&inetinfob->inet_daddr,tcp_dportb, snd_cwnd_1, srtt_us_1, in_flight_1, wmem_1, sndbuf1, packets_out_1, snd_ssthresh_1, rate_d_1, rate_i_1, lost_out_1, lost_1, retrans_out_1, goodput1, throughput1,&inetinfom->inet_saddr,tcp_sportm,&inetinfom->inet_daddr,tcp_dportm, snd_cwnd_2, srtt_us_2, in_flight_2, wmem_2, sndbuf2, packets_out_2, snd_ssthresh_2, rate_d_2, rate_i_2, lost_out_2, lost_2, retrans_out_2,goodput2, throughput2,&inetinfot->inet_saddr,tcp_sportt,&inetinfot->inet_daddr,tcp_dportt, snd_cwnd_3, srtt_us_3, in_flight_3, wmem_3, sndbuf3, packets_out_3, snd_ssthresh_3, (long long)cTime,c);
-
+	printk(" %pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%lld,%u\n", &inetinfo_cSS->inet_saddr, tcp_sport_cSS, &inetinfo_cSS->inet_daddr, tcp_dport_cSS, cwnd_cSS, sRtt_cSS, Th_cSS, Fs_cSS, Bo_cSS, Sl_cSS, Rt_cSS, Ds_cSS, Te_cSS, Gp_cSS, &inetinfo_fSS->inet_saddr, tcp_sport_fSS, &inetinfo_fSS->inet_daddr, tcp_dport_fSS, cwnd_fSS, sRtt_fSS, Th_fSS, Fs_fSS, Bo_fSS, Sl_fSS, Rt_fSS, Ds_fSS, Te_fSS, Gp_fSS, &inetinfo_GS->inet_saddr, tcp_sport_GS, &inetinfo_GS->inet_daddr, tcp_dport_GS, cwnd_GS, srtt_GS, Fs_GS, Bo_GS, (long long)Ts, Lb);
 }
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 
