@@ -187,7 +187,7 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	if (tcp_sk(bestsk)->retrans_out) Rt_cSS=tcp_sk(bestsk)->retrans_out;
 	if (tcp_sk(bestsk)->rate_delivered) Ds_cSS=tcp_sk(bestsk)->rate_delivered;
 	if (tcp_sk(bestsk)->rate_interval_us) Te_cSS=tcp_sk(bestsk)->rate_interval_us;	
-	if (tcp_sk(bestsk)->rate_delivered  && tcp_sk(bestsk)->rate_interval_us)  Gp_cSS=(tcp_sk(bestsk)->rate_delivered*mss1*8)/tcp_sk(bestsk)->rate_interval_us;		
+	if (tcp_sk(bestsk)->rate_delivered  && tcp_sk(bestsk)->rate_interval_us)  Gp_cSS=(tcp_sk(bestsk)->rate_delivered*mss_cSS*8)/tcp_sk(bestsk)->rate_interval_us;		
 
 	
 	/*********************************   variables of min sk   *********************************/
@@ -210,7 +210,7 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	if (tcp_sk(minsk)->retrans_out) Rt_fSS=tcp_sk(minsk)->retrans_out;
 	if (tcp_sk(minsk)->rate_delivered) Ds_fSS=tcp_sk(minsk)->rate_delivered;
 	if (tcp_sk(minsk)->rate_interval_us) Te_fSS=tcp_sk(minsk)->rate_interval_us;	
-	if (tcp_sk(minsk)->rate_delivered  && tcp_sk(minsk)->rate_interval_us)  Gp_fSS=(tcp_sk(minsk)->rate_delivered*mss1*8)/tcp_sk(minsk)->rate_interval_us;
+	if (tcp_sk(minsk)->rate_delivered  && tcp_sk(minsk)->rate_interval_us)  Gp_fSS=(tcp_sk(minsk)->rate_delivered*mss_fSS*8)/tcp_sk(minsk)->rate_interval_us;
 	
 	/*********************************   variables of meta sk   *********************************/
 
