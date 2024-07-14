@@ -171,8 +171,8 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 
 	struct inet_sock *inetinfo_cSS = inet_sk(bestsk);
 	u32 tcp_sport_cSS, tcp_dport_cSS;
-	tcp_sport_cSS = ntohs(inetinfob->inet_sport);
-	tcp_dport_cSS = ntohs(inetinfob->inet_dport);	
+	tcp_sport_cSS = ntohs(inetinfo_cSS->inet_sport);
+	tcp_dport_cSS = ntohs(inetinfo_cSS->inet_dport);	
 
 	u64 cwnd_cSS, sRtt_cSS, Th_cSS, Fs_cSS, Bo_cSS, Sl_cSS, Rt_cSS, Ds_cSS, Te_cSS, Gp_cSS;
 	cwnd_cSS=sRtt_cSS=Th_cSS=Fs_cSS=Bo_cSS=Sl_cSS=Rt_cSS=Ds_cSS=Te_cSS=Gp_cSS=0;
@@ -194,8 +194,8 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	
 	struct inet_sock *inetinfo_fSS = inet_sk(minsk);
 	u32 tcp_sport_fSS, tcp_dport_fSS;
-	tcp_sport_fSS = ntohs(inetinfom->inet_sport);
-	tcp_dport_fSS = ntohs(inetinfom->inet_dport);
+	tcp_sport_fSS = ntohs(inetinfo_fSS->inet_sport);
+	tcp_dport_fSS = ntohs(inetinfo_fSS->inet_dport);
 	
 	u64 cwnd_fSS, sRtt_fSS, Th_fSS, Fs_fSS, Bo_fSS, Sl_fSS, Rt_fSS, Ds_fSS, Te_fSS, Gp_fSS;
 	cwnd_fSS=sRtt_fSS=Th_fSS=Fs_fSS=Bo_fSS=Sl_fSS=Rt_fSS=Ds_fSS=Te_fSS=Gp_fSS=0;
@@ -216,8 +216,8 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 
 	struct inet_sock *inetinfo_GS = inet_sk(meta_sk);
 	u32 tcp_sport_GS, tcp_dport_GS;
-	tcp_sport_GS = ntohs(inetinfot->inet_sport);
-	tcp_dport_GS = ntohs(inetinfot->inet_dport);
+	tcp_sport_GS = ntohs(inetinfo_GS->inet_sport);
+	tcp_dport_GS = ntohs(inetinfo_GS->inet_dport);
 
 	u64 cwnd_GS, srtt_GS, Fs_GS, Bo_GS;
 	cwnd_GS=srtt_GS=Fs_GS=Bo_GS=0;
