@@ -100,9 +100,9 @@ if choix == '3' :
 		filecode="0"+str(i)+"_"+code+"log"
 		os.mkdir(filecode)
 		os.chdir(filecode)
-        	wgetUrl='wget https://raw.githubusercontent.com/dlnmr/MptcpDataset/main/'+code+'/Makefile'
+		wgetUrl='wget https://raw.githubusercontent.com/dlnmr/MptcpDataset/main/'+code+'/Makefile'
 		os.system(wgetUrl)
-        	wgetUrl='wget https://raw.githubusercontent.com/dlnmr/MptcpDataset/main/'+code+'/mptcp_'+code+'_log.c'
+		wgetUrl='wget https://raw.githubusercontent.com/dlnmr/MptcpDataset/main/'+code+'/mptcp_'+code+'_log.c'
 		os.system(wgetUrl)
 		os.chdir('../')
 		i+=1
