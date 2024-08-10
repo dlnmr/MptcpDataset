@@ -86,7 +86,7 @@ if choix == '2' :
 	os.system('sudo echo net.core.rmem_max=131072 >> /etc/sysctl.conf\n')
 	os.system('sudo echo net.ipv4.tcp_rmem= 131072 131072 131072 >> /etc/sysctl.conf\n')
 	os.system('sudo echo net.ipv4.tcp_wmem= 131072 131072 131072 >> /etc/sysctl.conf\n')
-	os.system('dd if=/dev/zero of=1G bs=1024 count=1250000\n')
+	os.system('dd if=/dev/zero of=1G bs=1024 count=125000\n')
 	os.system('sudo mv 1G /home/mptcp/1G\n')
 	os.system('sudo chmod 777  /home/mptcp/1G')
 	print(' !!!!!  !!!!!  !!!!! warning !!!!!  !!!!!  !!!!! \n now we have two kernels, to be able to start the system with the mptcp kernel we must click on:\n *Advanced options for Ubuntu\nthen on:\n *Ubuntu, with Linux 5.4.230.mptcp')
