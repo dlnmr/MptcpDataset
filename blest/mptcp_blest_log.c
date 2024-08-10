@@ -142,7 +142,7 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 }
 
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
- void getInfo(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int Lb) {
+ void Send_Info(struct sock *bestsk, struct sock *minsk, struct sock *meta_sk, int Lb) {
 
 	/*************************************
 	Pid: Path Identity : Source IP address + Source Tcp Port + Destination IP Address + Destination Tcp Port
@@ -320,11 +320,11 @@ struct sock *blest_get_available_subflow(struct sock *meta_sk, struct sk_buff *s
 			 * we wouldn't be able to send all the data we'd like to send on the fast flow
 			 * so don't do that
 			 */
-			/* ADD */getInfo(bestsk,minsk,meta_sk,0);
+			/* ADD */Send_Info(bestsk,minsk,meta_sk,0);
 			return NULL;
 		}
 	}
-	/* ADD */if (bestsk && minsk) getInfo(bestsk,minsk,meta_sk,1);
+	/* ADD */if (bestsk && minsk) Send_Info(bestsk,minsk,meta_sk,1);
 	return bestsk;
 }
 
