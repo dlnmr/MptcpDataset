@@ -31,8 +31,8 @@ def ftpFct(FtpHost,FtpUser):
 
 def senario(Scenario,SCHED,CC):
 	schedAndCc = {"balia": 'sudo insmod /home/mptcp/07_balialog/mptcp_balia_log.ko\nsudo sysctl net.ipv4.tcp_congestion_control=balia_log\n',
-		          "olia" : 'sudo insmod /home/mptcp/06_olialog/mptcp_olia_log.ko\nsudo sysctl net.ipv4.tcp_congestion_control=olia_log\n',
-		          "lia"  : 'sudo insmod /home/mptcp/05_lialog/mptcp_lia_log.ko\nsudo sysctl net.ipv4.tcp_congestion_control=lia_log\n',
+		      "olia" : 'sudo insmod /home/mptcp/06_olialog/mptcp_olia_log.ko\nsudo sysctl net.ipv4.tcp_congestion_control=olia_log\n',
+		      "lia"  : 'sudo insmod /home/mptcp/05_lialog/mptcp_lia_log.ko\nsudo sysctl net.ipv4.tcp_congestion_control=lia_log\n',
 	              "ecf"  : 'sudo insmod /home/mptcp/03_ecflog/mptcp_ecf_log.ko\nsudo sysctl net.mptcp.mptcp_scheduler=ecf_log\n',
 	              "blest": 'sudo insmod /home/mptcp/04_blestlog/mptcp_blest_log.ko\nsudo sysctl net.mptcp.mptcp_scheduler=blest_log\n',
 	              "rr"   : 'sudo insmod /home/mptcp/02_rrlog/mptcp_rr_log.ko\nsudo sysctl net.mptcp.mptcp_scheduler=rr_log\n',
