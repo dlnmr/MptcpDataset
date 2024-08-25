@@ -51,3 +51,13 @@ def senario(Scenario,SCHED,CC):
 sc15 = ['100m', '65m', '30m','5m']
 confRouters(sc15)
 senario("sc15","rr","lia")
+senario("sc15","rr","olia")
+senario("sc15","rr","balia")
+
+senario("sc15","ecf","lia")
+senario("sc15","ecf","olia")
+senario("sc15","ecf","balia")
+
+senario("sc15","blest","lia")
+senario("sc15","blest","olia")
+senario("sc15","blest","balia")
