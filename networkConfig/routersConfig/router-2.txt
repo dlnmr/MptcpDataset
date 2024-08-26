@@ -3,11 +3,11 @@ Router-2#sho runn
 interface GigabitEthernet0/0
  ip address 192.168.11.254 255.255.255.0
 !
-interface GigabitEthernet1/0
+interface GigabitEthernet0/1
  ip address 172.16.200.1 255.255.255.252
  service-policy output mptcp
 !
-interface GigabitEthernet1/1
+interface GigabitEthernet1/0
  ip address 172.16.201.1 255.255.255.252
  service-policy output mptcp
 !
