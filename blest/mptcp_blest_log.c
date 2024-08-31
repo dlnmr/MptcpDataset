@@ -154,8 +154,6 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	Gp: Goodput
 	Fs: In-flight segments
 	Bo: Sender Buffer Occupancy
-	Sl: Segment Loss
-	Rt: Retransmission
 	Ts: Timestamp
 	Lb: Label
  	cSS: current sub-session
@@ -169,55 +167,41 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	
 	/*********************************   variables of best sk   *********************************/
 
-	struct inet_sock *inetinfo_cSS = inet_sk(bestsk);
-	u32 tcp_sport_cSS, tcp_dport_cSS;
-	tcp_sport_cSS = ntohs(inetinfo_cSS->inet_sport);
-	tcp_dport_cSS = ntohs(inetinfo_cSS->inet_dport);	
+	struct inet_sock *inetinfo_cSS = inet_sk(bestsk);	
 
-	u64 cwnd_cSS, sRtt_cSS, Th_cSS, Fs_cSS, Bo_cSS, Sl_cSS, Rt_cSS, Ds_cSS, Te_cSS, Gp_cSS;
-	cwnd_cSS=sRtt_cSS=Th_cSS=Fs_cSS=Bo_cSS=Sl_cSS=Rt_cSS=Ds_cSS=Te_cSS=Gp_cSS=0;
+	u64 cwnd_cSS, sRtt_cSS, Th_cSS, Fs_cSS, Bo_cSS, Ds_cSS, Te_cSS, Gp_cSS;
+	cwnd_cSS=sRtt_cSS=Th_cSS=Fs_cSS=Bo_cSS=Ds_cSS=Te_cSS=Gp_cSS=0;
 	u32 mss_cSS = tcp_current_mss(bestsk);
 	
         if (tcp_sk(bestsk)->snd_cwnd) cwnd_cSS=tcp_sk(bestsk)->snd_cwnd;
 	if (tcp_sk(bestsk)->srtt_us) sRtt_cSS=tcp_sk(bestsk)->srtt_us;
 	if (tcp_sk(bestsk)->snd_cwnd  && tcp_sk(bestsk)->srtt_us)  Th_cSS=(tcp_sk(bestsk)->snd_cwnd*mss_cSS*8)/tcp_sk(bestsk)->srtt_us;
-	if (tcp_packets_in_flight(tcp_sk(bestsk))) Fs_cSS=tcp_packets_in_flight(tcp_sk(bestsk));
-	if (bestsk->sk_sndbuf) Bo_cSS=bestsk->sk_wmem_queued;
-	if (tcp_sk(bestsk)->lost) Sl_cSS=tcp_sk(bestsk)->lost;
-	if (tcp_sk(bestsk)->retrans_out) Rt_cSS=tcp_sk(bestsk)->retrans_out;
 	if (tcp_sk(bestsk)->rate_delivered) Ds_cSS=tcp_sk(bestsk)->rate_delivered;
 	if (tcp_sk(bestsk)->rate_interval_us) Te_cSS=tcp_sk(bestsk)->rate_interval_us;	
-	if (tcp_sk(bestsk)->rate_delivered  && tcp_sk(bestsk)->rate_interval_us)  Gp_cSS=(tcp_sk(bestsk)->rate_delivered*mss_cSS*8)/tcp_sk(bestsk)->rate_interval_us;		
-
+	if (tcp_sk(bestsk)->rate_delivered  && tcp_sk(bestsk)->rate_interval_us)  Gp_cSS=(tcp_sk(bestsk)->rate_delivered*mss_cSS*8)/tcp_sk(bestsk)->rate_interval_us;
+	if (tcp_packets_in_flight(tcp_sk(bestsk))) Fs_cSS=tcp_packets_in_flight(tcp_sk(bestsk));
+	if (bestsk->sk_sndbuf) Bo_cSS=bestsk->sk_wmem_queued;
 	
 	/*********************************   variables of min sk   *********************************/
 	
 	struct inet_sock *inetinfo_fSS = inet_sk(minsk);
-	u32 tcp_sport_fSS, tcp_dport_fSS;
-	tcp_sport_fSS = ntohs(inetinfo_fSS->inet_sport);
-	tcp_dport_fSS = ntohs(inetinfo_fSS->inet_dport);
 	
-	u64 cwnd_fSS, sRtt_fSS, Th_fSS, Fs_fSS, Bo_fSS, Sl_fSS, Rt_fSS, Ds_fSS, Te_fSS, Gp_fSS;
-	cwnd_fSS=sRtt_fSS=Th_fSS=Fs_fSS=Bo_fSS=Sl_fSS=Rt_fSS=Ds_fSS=Te_fSS=Gp_fSS=0;
+	u64 cwnd_fSS, sRtt_fSS, Th_fSS, Fs_fSS, Bo_fSS, Ds_fSS, Te_fSS, Gp_fSS;
+	cwnd_fSS=sRtt_fSS=Th_fSS=Fs_fSS=Bo_fSS=Ds_fSS=Te_fSS=Gp_fSS=0;
 	u32 mss_fSS = tcp_current_mss(minsk);
 	
         if (tcp_sk(minsk)->snd_cwnd) cwnd_fSS=tcp_sk(minsk)->snd_cwnd;
 	if (tcp_sk(minsk)->srtt_us) sRtt_fSS=tcp_sk(minsk)->srtt_us;
 	if (tcp_sk(minsk)->snd_cwnd  && tcp_sk(minsk)->srtt_us)  Th_fSS=(tcp_sk(minsk)->snd_cwnd*mss_fSS*8)/tcp_sk(minsk)->srtt_us;
-	if (tcp_packets_in_flight(tcp_sk(minsk))) Fs_fSS=tcp_packets_in_flight(tcp_sk(minsk));
-	if (minsk->sk_sndbuf) Bo_fSS=minsk->sk_wmem_queued;
-	if (tcp_sk(minsk)->lost) Sl_fSS=tcp_sk(minsk)->lost;
-	if (tcp_sk(minsk)->retrans_out) Rt_fSS=tcp_sk(minsk)->retrans_out;
 	if (tcp_sk(minsk)->rate_delivered) Ds_fSS=tcp_sk(minsk)->rate_delivered;
 	if (tcp_sk(minsk)->rate_interval_us) Te_fSS=tcp_sk(minsk)->rate_interval_us;	
 	if (tcp_sk(minsk)->rate_delivered  && tcp_sk(minsk)->rate_interval_us)  Gp_fSS=(tcp_sk(minsk)->rate_delivered*mss_fSS*8)/tcp_sk(minsk)->rate_interval_us;
+	if (tcp_packets_in_flight(tcp_sk(minsk))) Fs_fSS=tcp_packets_in_flight(tcp_sk(minsk));
+	if (minsk->sk_sndbuf) Bo_fSS=minsk->sk_wmem_queued;
 	
 	/*********************************   variables of meta sk   *********************************/
 
 	struct inet_sock *inetinfo_GS = inet_sk(meta_sk);
-	u32 tcp_sport_GS, tcp_dport_GS;
-	tcp_sport_GS = ntohs(inetinfo_GS->inet_sport);
-	tcp_dport_GS = ntohs(inetinfo_GS->inet_dport);
 
 	u64 cwnd_GS, srtt_GS, Fs_GS, Bo_GS;
 	cwnd_GS=srtt_GS=Fs_GS=Bo_GS=0;
@@ -227,7 +211,7 @@ static u32 blestsched_estimate_linger_time(struct sock *sk)
 	if (tcp_packets_in_flight(tcp_sk(meta_sk))) Fs_GS=tcp_packets_in_flight(tcp_sk(meta_sk));
 	if (meta_sk->sk_wmem_queued) Bo_GS=meta_sk->sk_wmem_queued;
 
-	printk(" %pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%u+%pI4+%u,%u,%u,%u,%u,%lld,%u\n", &inetinfo_cSS->inet_saddr, tcp_sport_cSS, &inetinfo_cSS->inet_daddr, tcp_dport_cSS, cwnd_cSS, sRtt_cSS, Th_cSS, Fs_cSS, Bo_cSS, Sl_cSS, Rt_cSS, Ds_cSS, Te_cSS, Gp_cSS, &inetinfo_fSS->inet_saddr, tcp_sport_fSS, &inetinfo_fSS->inet_daddr, tcp_dport_fSS, cwnd_fSS, sRtt_fSS, Th_fSS, Fs_fSS, Bo_fSS, Sl_fSS, Rt_fSS, Ds_fSS, Te_fSS, Gp_fSS, &inetinfo_GS->inet_saddr, tcp_sport_GS, &inetinfo_GS->inet_daddr, tcp_dport_GS, cwnd_GS, srtt_GS, Fs_GS, Bo_GS, (long long)Ts, Lb);
+	printk(" %pI4+%pI4,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%pI4,%u,%u,%u,%u,%u,%u,%u,%u,%pI4+%pI4,%u,%u,%u,%u,%lld,%u\n", &inetinfo_cSS->inet_saddr, &inetinfo_cSS->inet_daddr, cwnd_cSS, sRtt_cSS, Th_cSS,  Ds_cSS, Te_cSS, Gp_cSS, Fs_cSS, Bo_cSS, &inetinfo_fSS->inet_saddr, &inetinfo_fSS->inet_daddr, cwnd_fSS, sRtt_fSS, Th_fSS, Ds_fSS, Te_fSS, Gp_fSS, Fs_fSS, Bo_fSS, &inetinfo_GS->inet_saddr, &inetinfo_GS->inet_daddr, cwnd_GS, srtt_GS, Fs_GS, Bo_GS, (long long)Ts, Lb);
 }
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 
