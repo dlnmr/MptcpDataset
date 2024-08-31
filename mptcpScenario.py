@@ -23,11 +23,13 @@ def confRouters(SC):
         print("01---END Configuration of routers---")
 
 def ftpFct(FtpHost,FtpUser):
+    print("03---BEGIN FTP trasfert")
     ftp_server = ftplib.FTP(FtpHost, FtpUser, FtpUser)
     ftp_server.encoding = "utf-8"
-    fileToUpload = "/home/mptcp/1G"
+    fileToUpload = "/home/mptcp/5Gbits"
     with open(fileToUpload, "rb") as file:
         ftp_server.storbinary(f"STOR {fileToUpload}", file) 
+    print("03---END FTP trasfert")
 
 def senario(Scenario,SCHED,CC):
 	schedAndCc = {"balia": 'sudo insmod /home/mptcp/07_balialog/mptcp_balia_log.ko\nsudo sysctl net.ipv4.tcp_congestion_control=balia_log\n',
@@ -47,9 +49,12 @@ def senario(Scenario,SCHED,CC):
 	ftpFct(ClientFtp,userFtp)
     time.sleep(600)
     os.system("awk '{print $9}' /var/log/syslog > " + Scenario+"_"+SCHED+"_"+CC+"_.csv")
-
+	print("02---END Dataset creation for sched= "+SCHED+" & CC= "+CC+"+ in MPTCP server & Scenario= "+Scenario+"---")
+♯ sc15 : list of Bandwidth of each sub-flow [Bw_Path1, Bw_Path2, Bw_Path3, Bw_Path4]
 sc15 = ['100m', '65m', '30m','5m']
+♯ confRouters : Apply bandwidths on routers
 confRouters(sc15)
+♯ confRouters : configure schedules & congestion control algorithms on the server
 senario("sc15","rr","lia")
 senario("sc15","rr","olia")
 senario("sc15","rr","balia")
