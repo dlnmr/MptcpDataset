@@ -3,7 +3,7 @@ Title  :  Repository created for submission of an article titled: "Inventory of 
 
 Description :
 
-This repository outlines the steps to generate the first labeled dataset detailing critical MPTCP scheduling parameters, as outlined in the accompanying article. 
+This repository outlines the steps to generate the first labeled dataset detailing critical MPTCP scheduling parameters, as detailed in the accompanying article. 
 
 
 Installation :
