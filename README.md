@@ -16,3 +16,5 @@ Use mptcpScenario.py to configure routers, server host, and client host for data
 First Author :
 
 naimi mohamed rabie
+rabie.naimi@univ-sba.dz
+naimi.m.r@gmail.com
