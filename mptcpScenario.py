@@ -7,7 +7,7 @@ import time
 def confRouters(SC):
 		USER = 'cisco'
 		command = 'conf t\n policy-map mptcp\n class CM.10.1_20.1\n  shape average '+SC[0]+'\n class CM.10.1_21.1\n  shape average '+SC[1]+'\n class CM.11.1_20.1\n  shape average '+SC[2]+'\n class CM.11.1_21.1\n  shape average '+SC[3]+'\n end\n wr\n !\n !\n'
-		Routers = ['192.168.10.254','192.168.20.254']
+		Routers = ['192.168.10.254','192.168.11.254','192.168.20.254','192.168.21.254']
         print("01---BEGIN Configuration of routers---")
 		for Router in Routers:
 			print("config in router : ",Router)
