@@ -104,7 +104,7 @@ if choix == '3' :
 		os.system(wgetUrl)
 		wgetUrl='wget https://raw.githubusercontent.com/dlnmr/MptcpDataset/main/'+code+'/mptcp_'+code+'_log.c'
 		os.system(wgetUrl)
-		os.system(make)
+		os.system('make')
 		os.chdir('../')
 		i+=1
 	os.system('sudo chmod -R 777  /home/mptcp/')
