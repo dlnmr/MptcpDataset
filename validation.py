@@ -11,7 +11,7 @@ nombre_de_colones=np.array([])
 nombre_de_Cellules_manquantes=np.array([])
 types_de_variables=np.array([])
 for file in dirs:
-   if ".csv" in file and "sc15_" in file  :
+   if ".csv" in file :
        nameFile="dataset/csv/"+file
        fichiers=np.append(fichiers,file)
        # Chargez votre DataFrame
@@ -34,4 +34,4 @@ dff = pd.DataFrame({
 	"nombre_de_Cellules_manquantes"   : nombre_de_Cellules_manquantes,
 	"types_de_variables"              : types_de_variables             
 })
-dff.to_csv('sc15.txt', index=False)
+dff.to_csv('allSc.txt', index=False)
