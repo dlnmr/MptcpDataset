@@ -28,8 +28,8 @@ for file in dirs:
        nombre_de_Cellules_manquantes=np.append(nombre_de_Cellules_manquantes,overview['n_cells_missing'])
        types_de_variables=np.append(types_de_variables,overview['types'])
 dff = pd.DataFrame({
-    "fichiers"                      : fichiers,
-    "nombre_de_lignes"              : nombre_de_lignes,
+         "fichiers"                       : fichiers,
+         "nombre_de_lignes"               : nombre_de_lignes,
 	"nombre_de_colones"               : nombre_de_colones,
 	"nombre_de_Cellules_manquantes"   : nombre_de_Cellules_manquantes,
 	"types_de_variables"              : types_de_variables             
