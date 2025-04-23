@@ -1,33 +1,22 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-# 1. Charger le dataset
-df = pd.read_csv("dataset/csv/sc1_rr_balia.csv")
+# 1) Définissez vos noms de colonnes (25 noms)
+col_names = [
+    "curr_Pid", "curr_CWND", "curr_sRTT", "curr_Th", "curr_Ds",
+    "curr_Te", "curr_Gp", "curr_Fs", "curr_Bo",
+    "fast_Pid", "fast_CWND", "fast_sRTT", "fast_Th", "fast_Ds",
+    "fast_Te", "fast_Gp", "fast_Fs", "fast_Bo",
+    "glob_Pid", "glob_CWND", "glob_sRTT", "glob_Th", "glob_Ds",
+    "Timestamp", "Label"
+]
 
-# 2. Afficher un rapide aperçu textuel
-print("=== Aperçu des types et des valeurs manquantes ===")
-print(df.info())
-print("\n=== Statistiques descriptives (numériques) ===")
-print(df.describe().T)
+# 2) Chargez le DataFrame en assignant ces noms
+df = pd.read_csv("dataset/csv/sc1_rr_balia.csv", header=None, names=col_names)
 
-# 3. Figure 1 : Barres horizontales du nombre de valeurs manquantes
-missing = df.isnull().sum()
-plt.figure(figsize=(10, 8))
-missing.plot(kind="barh", color="steelblue")
-plt.title("Valeurs manquantes par variable")
-plt.xlabel("Nombre de valeurs manquantes")
-plt.ylabel("Variables")
-plt.tight_layout()
-plt.savefig("missing_values.png", dpi=300)
-plt.show()
+# 3) Ajustez les options d’affichage pour ne plus tronquer les colonnes
+pd.set_option("display.max_columns", None)      # Montre toutes les colonnes
+pd.set_option("display.width", 1000)             # Largeur maximale de la console
+pd.set_option("display.max_colwidth", None)     # Ne tronque pas le contenu des cellules
 
-# 4. Figure 2 : Heatmap de la corrélation (sur variables numériques)
-num = df.select_dtypes(include="number")
-corr = num.corr()
-plt.figure(figsize=(12, 10))
-sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", cbar_kws={"shrink": .8})
-plt.title("Matrice de corrélation des variables numériques")
-plt.tight_layout()
-plt.savefig("correlation_matrix.png", dpi=300)
-plt.show()
+# 4) Affichez, par exemple, les 5 premières lignes en une seule ligne chacune
+print(df.head(100).to_string(index=False))
