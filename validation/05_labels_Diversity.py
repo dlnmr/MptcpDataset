@@ -46,14 +46,15 @@ for i, path in enumerate(files):
         #labels=[f"Label 0", f"Label 1"],
         autopct='%1.1f%%',
         colors=colors_ordered,
-        startangle=90
+        startangle=90,
+        textprops={'fontsize': 20}
     )
     #title = os.path.basename(path).replace(".csv", "")
     #axs[i].set_title(f"({labels_letters[i]}) {title}", fontsize=10)
-    axs[i].set_title(f"({labels_letters[i]})", fontsize=10)
+    axs[i].set_title(f"({labels_letters[i]})", fontsize=20)
 
 # ✅ Légende uniforme
-fig.legend(["0", "1"], title='labels',loc='lower center', ncol=2, fontsize=12)
+fig.legend(["0", "1"], title='labels',loc='lower center', ncol=2, fontsize=20)
 
 plt.tight_layout(rect=[0, 0.05, 1, 1])
 plt.savefig("diversity_label_fin.png", dpi=300)
