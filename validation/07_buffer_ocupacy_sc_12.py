@@ -22,7 +22,7 @@ column_names = [
     "curr_Te", "curr_Gp", "curr_Fs", "curr_Bo",
     "fast_Pid", "fast_CWND", "fast_sRTT", "fast_Th", "fast_Ds",
     "fast_Te", "fast_Gp", "fast_Fs", "fast_Bo",
-    "glob_Pid", "glob_CWND", "glob_sRTT", "glob_Th", "glob_Ds",
+    "glob_Pid", "glob_CWND", "glob_sRTT", "glob_Fs", "glob_Bo",
     "Timestamp", "Label"
 ]
 
@@ -68,7 +68,7 @@ for scheduler in ["rr", "blest", "ecf"]:
         subset = all_data[(all_data["Scheduler"] == scheduler) & (all_data["CC"] == cc)]
         if not subset.empty:
             bplot = plt.boxplot(
-                subset["curr_Bo"],
+                subset["glob_Bo"],
                 positions=[current_pos],
                 widths=0.5,
                 patch_artist=True,
@@ -86,7 +86,7 @@ for scheduler in ["rr", "blest", "ecf"]:
 # ✏️ Mise en forme
 #plt.xticks(positions, labels, rotation=45, ha='right')
 plt.xticks(positions, labels)
-plt.ylabel("Occupation du buffer (octets) de la sous-sessioncourante (curr_Bo) ")
+plt.ylabel("Occupation du buffer (octets) de la session globale (curr_Bo) ")
 plt.title("(a)", fontsize=20)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 
