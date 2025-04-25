@@ -1,0 +1,163 @@
+import pandas as pd
+import os
+import glob
+
+#folder_path = "dataset/csv/"
+#files = glob.glob(os.path.join(folder_path, "*.csv"))
+
+# 📁 Liste des fichiers à analyser
+
+files = [
+    "dataset/csv/sc12_rr_balia.csv",
+    "dataset/csv/sc12_blest_balia_3.csv",
+    "dataset/csv/sc12_ecf_balia.csv",
+    "dataset/csv/sc12_rr_olia.csv",
+    "dataset/csv/sc12_blest_olia_3.csv",
+    "dataset/csv/sc12_ecf_olia.csv",
+    "dataset/csv/sc12_rr_lia.csv",
+    "dataset/csv/sc12_blest_lia_3.csv",
+    "dataset/csv/sc12_ecf_lia.csv",
+    
+    "dataset/csv/sc14_rr_balia.csv",
+    "dataset/csv/sc14_blest_balia.csv",
+    "dataset/csv/sc14_ecf_balia.csv",
+    "dataset/csv/sc14_rr_olia.csv",
+    "dataset/csv/sc14_blest_olia.csv",
+    "dataset/csv/sc14_ecf_olia.csv",
+    "dataset/csv/sc14_rr_lia.csv",
+    "dataset/csv/sc14_blest_lia.csv",
+    "dataset/csv/sc14_ecf_lia.csv",
+    
+    "dataset/csv/sc15_rr_balia.csv",
+    "dataset/csv/sc15_blest_balia.csv",
+    "dataset/csv/sc15_ecf_balia.csv",
+    "dataset/csv/sc15_rr_olia.csv",
+    "dataset/csv/sc15_blest_olia.csv",
+    "dataset/csv/sc15_ecf_olia.csv",
+    "dataset/csv/sc15_rr_lia.csv",
+    "dataset/csv/sc15_blest_lia.csv",
+    "dataset/csv/sc15_ecf_lia.csv"
+]
+
+
+# 🔠 Colonnes supposées dans chaque fichier (sans entête dans le CSV)
+column_names = [
+    "curr_Pid", "curr_CWND", "curr_sRTT", "curr_Th", "curr_Ds",
+    "curr_Te", "curr_Gp", "curr_Fs", "curr_Bo",
+    "fast_Pid", "fast_CWND", "fast_sRTT", "fast_Th", "fast_Ds",
+    "fast_Te", "fast_Gp", "fast_Fs", "fast_Bo",
+    "glob_Pid", "glob_CWND", "glob_sRTT", "glob_Th", "glob_Ds",
+    "Timestamp", "Label"
+]
+
+# 📊 Extraction des temps de téléchargement
+print("📥 Temps de téléchargement (en millisecondes) :\n")
+
+for path in files:
+    df = pd.read_csv(path, header=None, names=column_names)
+    start_time = df["Timestamp"].iloc[0]
+    end_time = df["Timestamp"].iloc[-1]
+    duration_ms = end_time - start_time
+
+    filename = os.path.basename(path)
+    print(f"{filename:<30} : {duration_ms:,} ms")
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+
+data = {
+    #"sc12_rr_balia.csv": 21,
+    #"sc12_blest_balia_3.csv": 30,
+    #"sc12_ecf_balia.csv": 32,
+    #"sc12_rr_olia.csv": 20,
+    #"sc12_blest_olia_3.csv": 31,
+    #"sc12_ecf_olia.csv": 31,
+    #"sc12_rr_lia.csv": 19,
+    #"sc12_blest_lia_3.csv": 30,
+    #"sc12_ecf_lia.csv": 34,
+    #"sc14_rr_balia.csv": 54,
+    #"sc14_blest_balia.csv": 37,
+    #"sc14_ecf_balia.csv": 45,
+    #"sc14_rr_olia.csv": 54,
+    #"sc14_blest_olia.csv": 38,
+    #"sc14_ecf_olia.csv": 50,
+    #"sc14_rr_lia.csv": 54,
+    #"sc14_blest_lia.csv": 37,
+    #"sc14_ecf_lia.csv": 43,
+    "sc15_rr_balia.csv": 278,
+    "sc15_blest_balia.csv": 48,
+    "sc15_ecf_balia.csv": 48,
+    "sc15_rr_olia.csv": 277,
+    "sc15_blest_olia.csv": 47,
+    "sc15_ecf_olia.csv": 49,
+    "sc15_rr_lia.csv": 278,
+    "sc15_blest_lia.csv": 47,
+    "sc15_ecf_lia.csv": 52,
+}
+
+# 🎨 Styles par ordonnanceur
+scheduler_colors = {
+    "rr": "cornflowerblue",
+    "blest": "red",
+    "ecf": "gold"
+}
+
+# 🎨 Hachures par algorithme de congestion
+cc_hatch = {
+    "balia": "++",
+    "olia": "oo",
+    "lia": "xx"
+}
+
+# 🔢 Préparation des données
+items = list(data.items())
+items.sort()  # Optionnel : trie les noms de fichiers
+
+labels = []
+durations = []
+colors = []
+hatches = []
+
+for filename, duration in items:
+    labels.append(filename.replace(".csv", ""))
+    durations.append(duration)
+
+    parts = filename.split("_")
+    scheduler = parts[1]
+    cc_algo = parts[2].replace(".csv", "").replace("_3", "")
+
+    colors.append(scheduler_colors.get(scheduler, "gray"))
+    hatches.append(cc_hatch.get(cc_algo, ""))
+
+# 📊 Création de la figure
+plt.figure(figsize=(12, 10), dpi=300)
+#bars = plt.barh(labels, durations, color=colors)
+bars = plt.barh(labels, durations, color=colors)
+# 🧩 Appliquer les hachures
+for bar, hatch in zip(bars, hatches):
+    bar.set_hatch(hatch)
+
+plt.xlabel("Temps de téléchargement (s)", fontsize=12)
+plt.title("(c)", fontsize=20)
+#plt.xticks(rotation=90,fontsize=15)
+plt.xticks(fontsize=15)
+plt.yticks(fontsize=15)
+
+# 🧾 Légende personnalisée
+from matplotlib.patches import Patch
+
+legend_elements = [
+    Patch(facecolor="cornflowerblue", label="RR"),
+    Patch(facecolor="red", label="BLEST"),
+    Patch(facecolor="gold", label="ECF"),
+    Patch(facecolor="white", edgecolor="black", hatch="++", label="Balia"),
+    Patch(facecolor="white", edgecolor="black", hatch="oo", label="Olia"),
+    Patch(facecolor="white", edgecolor="black", hatch="xx", label="Lia"),
+]
+
+plt.legend(handles=legend_elements, title="Equi & CC", loc="lower right", fontsize=20)
+plt.tight_layout()
+plt.savefig("Temps_de_telechargement_sc_15_Fin.png", dpi=300)
+plt.show()
